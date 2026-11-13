@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Screens/Firstscreen.dart';
+import 'Screens/profileScreen.dart';
+import 'Screens/courseDetailsScreen.dart';
 
 void main() {
   runApp(const CouseHubApp());
@@ -11,7 +12,8 @@ class CouseHubApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:TestScreen()
+      debugShowCheckedModeBanner: false, 
+      home:DetailsScreen()
     );
 
   }
