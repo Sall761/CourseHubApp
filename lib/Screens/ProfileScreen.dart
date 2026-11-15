@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import "courseDetailsScreen.dart";
+import 'paymentScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
 
@@ -10,6 +12,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  int currentIndex = 0;
   
   @override
   Widget build(BuildContext context) {
@@ -17,6 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         
         appBar: AppBar(
         backgroundColor: Color(0xFF1A56DB),
+        foregroundColor: Colors.white,
         ),
 
         drawer: Drawer(
@@ -49,13 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: Icon(Icons.person),
                   selectedColor: Color(0xFF1A56DB),
                   onTap: (){
-
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Payscreen() ));
                   },),
                 ListTile(
                   title: Text("Home"),
                   leading: Icon(Icons.home),
                   onTap: (){
-
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DetailsScreen()));
                   },),
 
               
@@ -64,15 +68,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         
-          body: Container(
-            
-                child: Column(
+          body:Column(
                   children: [
                     Container(
                       width:double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50) ,bottomRight: Radius.circular(50)),
                           color: Color(0xFF1A56DB),
+                          boxShadow: [BoxShadow(color: Colors.black,blurRadius: 20,offset: Offset(0, 1))]
                           ),
                           
                       height: 200,
@@ -110,7 +113,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: SizedBox(
                           height: 100,
                           child: Card(
-                            color: Colors.yellow,
+                            elevation: 8,
+                            shadowColor: Colors.black,
+                            color: const Color.fromARGB(255, 255, 154, 21),
                         
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -119,11 +124,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text("Complated courses"),
-                                    Text("2"),
-                                  ],
+                                                  Column(
+                                                    children: [
+                                                      Text("Coumplated ",
+                                                          style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.w900,
+                                                                  color: Colors.white,
+                                                                  shadows: [Shadow(
+                                                                            color: Colors.black,
+                                                                            offset: Offset(0, 1),
+                                                                            blurRadius: 5)]
+                                                          ),),
+                                                      Text("Courses ",
+                                                          style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.w900,
+                                                                  color: Colors.white,
+                                                                  shadows: [Shadow(
+                                                                            color: Colors.black,
+                                                                            offset: Offset(0, 1),
+                                                                            blurRadius: 5)]
+                                                          ),),
+                                                    ],
+                                                  ),
+                                                  Text("4",
+                                                      style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.w900,
+                                                              color: Colors.white,
+                                                              shadows: [Shadow(
+                                                                        color: Colors.black,
+                                                                        offset: Offset(0, 1),
+                                                                        blurRadius: 5)]
+                                                      ),),
+                                                  ],
                                       ),
-                              Icon(Icons.book,size: 30,)
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color:Colors.white,
+                                  borderRadius: BorderRadius.circular(20)
+                                  
+                                ),
+                                child: Icon(Icons.school_rounded,size: 40,))
                         
                               ],
                             ),
@@ -133,11 +177,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     // Card Two Complate courses
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           height: 100,
-                          width: 200,
                           child: Card(
-                            color: Colors.yellow,
+                            elevation: 8,
+                            shadowColor: Colors.black,
+                            color: const Color.fromARGB(255, 255, 154, 21),
+                        
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,32 +191,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                  Text("Provider",style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),),
-                                  Text("4",style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),),
-                                  ],
+                                                  Column(
+                                                    children: [
+                                                      
+                                                      Text("Courses ",
+                                                          style: TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight: FontWeight.w900,
+                                                                  color: Colors.white,
+                                                                  shadows: [Shadow(
+                                                                            color: Colors.black,
+                                                                            offset: Offset(0, 1),
+                                                                            blurRadius: 5)]
+                                                          ),),
+                                                    ],
+                                                  ),
+                                                  Text("4",
+                                                      style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.w900,
+                                                              color: Colors.white,
+                                                              shadows: [Shadow(
+                                                                        color: Colors.black,
+                                                                        offset: Offset(0, 1),
+                                                                        blurRadius: 5)]
+                                                      ),),
+                                                  ],
                                       ),
-                              Row(
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
-                                    
-                                    child: Card(
-                                      color:Colors.white,
-                                      child: Icon(Icons.book,size: 30,))),
-                                ],
-                                )
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color:Colors.white,
+                                  borderRadius: BorderRadius.circular(20)
+                                  
+                                ),
+                                child: Icon(Icons.menu_book_rounded,size: 40))
+                        
                               ],
                             ),
-                            ),
+                        
+                          ),
                         ),
-                      ),    
+                      ),
+                  
                     ],
                   ),
 
@@ -193,182 +256,294 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: 20,),
 
                   Container(
-                    height: 240,
+                    height: 220,
                     
                     decoration: BoxDecoration(
+                      // color:Colors.amber
                     ),
 
                     // List of Courses
-                    child: ListView(
-                      children: [
-
-                        // card 1
-                        Container(
-                          height: 70,
-                          margin: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                          color: Color(0xFF1A56DB),
-                          borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                              // Details
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                Text("Course name ",style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900),),
-                                Text("Provider",style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),),
-                              ],),
-                            
-                              // state
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.green,
-                                ),
-                                height: 35,
-                                width: 170,
-                                
-                                child: Row(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                      
+                          // card 1
+                          Container(
+                            height: 80,
+                            margin: EdgeInsets.only(left: 5,right: 5),
+                            decoration: BoxDecoration(
+                            ),
+                            child:Card(
+                              color: Color(0xFF1A56DB),
+                      
+                              elevation: 8,
+                              shadowColor: Colors.black,
+                              child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text("Accepted",
-                                    style: TextStyle(color: Colors.white,fontSize: 20),),
-                                    Icon(Icons.check,color: Colors.white,)
-                                  ],
-                                ),
-                              ),
-                              
-                            
-                            ],),
-                          ),
-                          ), 
-                        // card 2
-                        Container(
-                          height: 70,
-                          margin: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                          color: Color(0xFF1A56DB),
-                          borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                              // Details
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                Text("Course name ",style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900),),
-                                Text("Provider",style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),),
-                              ],),
-                            
-                              // state
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color.fromARGB(255, 255, 154, 21),
-                                ),
-                                height: 35,
-                                width: 170,
+                                  // Details
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    Text("Course name ",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900),),
+                                    Text("Provider",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500),),
+                                  ],),
                                 
-                                child: Row(
+                                  // state
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.green,
+                                    ),
+                                    height: 35,
+                                    width: 170,
+                                    
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text("Accepted",
+                                        style: TextStyle(color: Colors.white,fontSize: 20),),
+                                        Icon(Icons.check,color: Colors.white,)
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                
+                                ],),
+                            ),
+                            ),
+                          // card 1
+                          Container(
+                            height: 80,
+                            margin: EdgeInsets.only(left: 5,right: 5),
+                            decoration: BoxDecoration(
+                            ),
+                            child:Card(
+                              color: Color(0xFF1A56DB),
+                      
+                              elevation: 8,
+                              shadowColor: Colors.black,
+                              child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text("whaiting",
-                                    style: TextStyle(color: Colors.white,fontSize: 20),),
-                                    Icon(Icons.access_alarm_outlined,color: Colors.white,)
-                                  ],
-                                ),
-                              ),
-                              
-                            
-                            ],),
-                          ),
-                          ), 
-                        // card 3
-                        Container(
-                          height: 70,
-                          margin: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                          color: Color(0xFF1A56DB),
-                          borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                              // Details
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                Text("Course name ",style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900),),
-                                Text("Provider",style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),),
-                              ],),
-                            
-                              // state
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color.fromARGB(255, 255, 154, 21),
-                                ),
-                                height: 35,
-                                width: 170,
+                                  // Details
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    Text("Course name ",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900),),
+                                    Text("Provider",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500),),
+                                  ],),
                                 
-                                child: Row(
+                                  // state
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.green,
+                                    ),
+                                    height: 35,
+                                    width: 170,
+                                    
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text("Accepted",
+                                        style: TextStyle(color: Colors.white,fontSize: 20),),
+                                        Icon(Icons.check,color: Colors.white,)
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                
+                                ],),
+                            ),
+                            ),
+                          // card 1
+                          Container(
+                            height: 80,
+                            margin: EdgeInsets.only(left: 5,right: 5),
+                            decoration: BoxDecoration(
+                            ),
+                            child:Card(
+                              color: Color(0xFF1A56DB),
+                      
+                              elevation: 8,
+                              shadowColor: Colors.black,
+                              child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text("whaiting",
-                                    style: TextStyle(color: Colors.white,fontSize: 20),),
-                                    Icon(Icons.access_alarm_outlined,color: Colors.white,)
-                                  ],
-                                ),
-                              ),
-                              
-                            
-                            ],),
-                          ),
-                          ), 
-                        
-                        
-                      ],
+                                  // Details
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    Text("Course name ",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900),),
+                                    Text("Provider",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500),),
+                                  ],),
+                                
+                                  // state
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.green,
+                                    ),
+                                    height: 35,
+                                    width: 170,
+                                    
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text("Accepted",
+                                        style: TextStyle(color: Colors.white,fontSize: 20),),
+                                        Icon(Icons.check,color: Colors.white,)
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                
+                                ],),
+                            ),
+                            ),
+                          // card 1
+                          Container(
+                            height: 80,
+                            margin: EdgeInsets.only(left: 5,right: 5),
+                            decoration: BoxDecoration(
+                            ),
+                            child:Card(
+                              color: Color(0xFF1A56DB),
+                      
+                              elevation: 8,
+                              shadowColor: Colors.black,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                  // Details
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    Text("Course name ",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900),),
+                                    Text("Provider",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500),),
+                                  ],),
+                                
+                                  // state
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.green,
+                                    ),
+                                    height: 35,
+                                    width: 170,
+                                    
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text("Accepted",
+                                        style: TextStyle(color: Colors.white,fontSize: 20),),
+                                        Icon(Icons.check,color: Colors.white,)
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                
+                                ],),
+                            ),
+                            ),
+                          // card 1
+                          Container(
+                            height: 80,
+                            margin: EdgeInsets.only(left: 5,right: 5),
+                            decoration: BoxDecoration(
+                            ),
+                            child:Card(
+                              color: Color(0xFF1A56DB),
+                      
+                              elevation: 8,
+                              shadowColor: Colors.black,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                  // Details
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    Text("Course name ",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900),),
+                                    Text("Provider",style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500),),
+                                  ],),
+                                
+                                  // state
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.green,
+                                    ),
+                                    height: 35,
+                                    width: 170,
+                                    
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text("Accepted",
+                                        style: TextStyle(color: Colors.white,fontSize: 20),),
+                                        Icon(Icons.check,color: Colors.white,)
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                
+                                ],),
+                            ),
+                            ),
+                          
+                          
+                        ],
+                      ),
                     ),
                   )
                   ],
-              ),
+              
 
               
           ),
-
-          bottomNavigationBar: BottomNavigationBar(items:
-          [
-            BottomNavigationBarItem(icon:Icon(Icons.person),label: "Profile"),
-            BottomNavigationBarItem(icon:Icon(Icons.home),label: "Home")
-
-          ]
+          bottomNavigationBar: BottomNavigationBar(
+                      
+            
+            items:
+            [BottomNavigationBarItem(icon:Icon(Icons.person),label: "Profile"),
+            BottomNavigationBarItem(icon:Icon(Icons.home),label: "Home")]
           ),
 
       );
