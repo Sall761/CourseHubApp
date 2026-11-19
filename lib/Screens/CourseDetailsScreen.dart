@@ -1,249 +1,452 @@
 import 'package:flutter/material.dart';
+import 'profileScreen.dart'; 
+import 'enrollment_form_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({super.key});
+  final Map<String, dynamic> course;
+
+  const DetailsScreen({super.key, required this.course});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
+  
 class _DetailsScreenState extends State<DetailsScreen> {
+  bool isFavorite = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+  // to store course details in varialble
+    final course = widget.course;
+    // if there is no learn items in course return [] empty
+    final List<String> learnItems = List<String>.from(course['learn'] ?? []);
+  
+    bool isEnrolled = false;
+          for (var c in ProfileScreen.enrolledCourses) {
+            if (c['name'] == course['name']) {
+              isEnrolled = true;
+              break;
+              }
+}
 
-      body:Column(
-              children: [
-                // Buttons and image
-                Container(
-                  
-                  width: double.infinity,
-                  // color:Colors.red,
-                  child: Stack(
-                    children: [
-            
-                      // the Image
-                      Container(
-                        height: 200,
-                        child: Image.asset("Assets/images/F1.png",
-                                width: double.infinity,
-                                height: double.infinity,
-                                fit:BoxFit.cover,),
+
+
+
+
+
+
+
+
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+
+
+
+            Expanded(
+              child: SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    // Course Banner Image
+                    SizedBox(
+                      height: 210,
+                      width: double.infinity,
+                      child: Image.asset(
+                        course['image'],
+                        fit: BoxFit.cover,
                       ),
-        
-                      
-                      // Buttons
-                      Container(
-                            padding: EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(30)
-                                    ),
-                                    // Icon Button
-                                    child: IconButton(onPressed: (){
-                                      Navigator.of(context).pop(context);
-                                    }, icon: Icon(Icons.arrow_back))),
-            
-                                    // elevated Button
-                                    ElevatedButton(onPressed: (){}, 
-                                          child: Row(children: [Text("Share"),Icon(Icons.ios_share_outlined)],))
-                      ],),),
-                    
-                    // the detail card
+                    ),
+
+
+
+                    // Buttons
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                color: Color(0xFF1A56DB),
+                              ),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Course link copied: ${course['name']}'),
+                                      ),
+                                    );
+
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: const Color(0xFF1A56DB),
+                            ),
+                            icon: const Icon(Icons.ios_share_outlined, size: 18),
+                            label: const Text('Share'),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
+
+
+
+
+                    // Details Card
                     Container(
-                        margin: const EdgeInsets.only(top: 160), 
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
+                      margin: const EdgeInsets.only(top: 175),
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Course Title
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                            child: Text(
+                              course['name'],
+                              style: const TextStyle(
+                                color: Color(0xFF0F172A),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 10),
+
+                          // Price
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Text(
+                              course['price'] == 0
+                                  ? 'Free'
+                                  : '${course['price']} YER',
+                              style: const TextStyle(
+                                color: Color(0xFFF59E0B),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
                           ),
-                          child:Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(height: 16),
+
+                          // Course Sub-Details Row
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            color: const Color(0xFFF1F5F9),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                // Course Title
-                                Container(
-                                  padding: EdgeInsets.only(left: 25,top: 25),
-        
-                                  child: Text("Course name : Flutter Dev mobiles",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w900)),
-                                ),
-                                      SizedBox(height: 10,),
-        
-                                // The Price
-                                Container(
-                                  padding: EdgeInsets.only(left: 25),
-        
-                                  child: Text("150 SAR",style: TextStyle(
-                                        color: const Color(0xffF59E0B),
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w900,
-                                        )),
-                                ),
-                                      
-                                SizedBox(height: 10,),
-                                
-                                //Course subDetails Row
-                                
-                                Container(
-                                  
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 227, 226, 226)
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    // Level
-                                      children: [
-                                      Text("Expert & Advanced",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                                      Icon(Icons.emoji_events_outlined,color: Color(0xffF59E0B),),
-                                      
-                                      Container(
-                                        height: 20,                 
-                                        width: 1,                  
-                                        color: Colors.black,),
-                                      // Date
-                                      Text("22/3/2027",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                                      Icon(Icons.calendar_month_rounded,color: Color(0xffF59E0B),),
-                                      
-                                      Container(
-                                        height: 20,                 
-                                        width: 1,                  
-                                        color: Colors.black,),
-                                      // Time
-                                      Text("11 PM",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                                      Icon(Icons.access_alarm_outlined,color: Color(0xffF59E0B),),
-                                  ],)),
-                                  SizedBox(height: 10,),
-        
-                                  // Techer Details
-        
-                                Container(
-                                  margin: EdgeInsets.only(left: 20,right: 20),
-                                  height: 150,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 227, 226, 226),
-                                    borderRadius: BorderRadius.circular(30),
-                                    boxShadow: [BoxShadow(color: Colors.black,offset: Offset(0, 4),blurRadius: 3)]),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                      // provider details
-                                      ListTile(
-                                        title: Text("Programming Acadimy"),
-                                        // the image
-                                        leading: ClipRRect(
-                                          borderRadius: BorderRadius.circular(25), 
-                                          child: Image.asset(
-                                            "Assets/images/F1.png", 
-                                            width: 45,
-                                            height: 45,
-                                            fit: BoxFit.cover,
-                                          
-                                        )),
-                                        ),
-        
-                                      // provider details & Teacher Details
-                                        ListTile(
-                                          title:Text("Salem ben jabal"),
-                                          subtitle: Text("A Flutter programmin Expert"),
-                                          leading:ClipRRect(
-                                            borderRadius: BorderRadius.circular(25),
-                                            child: Image.asset("Assets/images/F1.png",height: 45,width: 45,fit: BoxFit.cover,)),          
-                                        )
-                                    ],),
-                                ),
-                                  SizedBox(height: 6,),
-        
-                                  Container(
-                                    height: 170,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.category_outlined,
+                                      color: Color(0xFFF59E0B),
+                                      size: 20,
                                     ),
-                                    padding: EdgeInsets.all(15),
-                                    
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                      Text("What will We Learn?",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: const Color.fromARGB(255, 255, 154, 21)),),
-        
-                                      Row(children: [
-                                        Icon(Icons.check_circle_outline,color: const Color.fromARGB(255, 255, 154, 21,),size: 25,),
-                                        Text("Build real apps from scratch")
-                                      ],),
-                                      Row(children: [
-                                        Icon(Icons.check_circle_outline,color: const Color.fromARGB(255, 255, 154, 21,),size: 25,),
-                                        Text("Connect apps with Databases & Firebase")
-                                      ],),
-                                      Row(children: [
-                                        Icon(Icons.check_circle_outline,color: const Color.fromARGB(255, 255, 154, 21,),size: 25,),
-                                        Text("Professional State Management")
-                                      ],),
-                                      Row(children: [
-                                        Icon(Icons.check_circle_outline,color: const Color.fromARGB(255, 255, 154, 21,),size: 25,),
-                                        Text("Publish your app on Google Play & App Store")
-                                      ],),
-        
-                                    ],),),
-                                  
-                                  
-                                  
-                                  
-        
-        
-        
-        
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      course['category'],
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  height: 20,
+                                  width: 1,
+                                  color: Colors.grey,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.calendar_month_rounded,
+                                      color: Color(0xFFF59E0B),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      course['start'],
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  height: 20,
+                                  width: 1,
+                                  color: Colors.grey,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time,
+                                      color: Color(0xFFF59E0B),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      course['hours'],
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
-                    ],)
-                    ,),
-        
-                                      Container(
-                                    
-                                    height: 80,
-                                    width: double.infinity,
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                      // Elevated button
-                                      Container(
-                                            height: 100,
-                                            width: 300,
-                                            margin: EdgeInsets.all(5),
-                                            
+                          const SizedBox(height: 18),
 
 
-                                            child: TextButton(
-                                              style: TextButton.styleFrom(shadowColor: Colors.black,elevation: 8,backgroundColor: Colors.blue),
-                                              onPressed: (){}, child: Text("Register",style: TextStyle(color: Colors.white,fontSize: 20),))),
-                                                          // Icon Bottun
-                                                          Container(
-                                                            height: 45,
-                                                            width: 45,
-                            
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.red,
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              boxShadow: [BoxShadow(color: Colors.grey,blurRadius: 18,offset: Offset(0, 7))]
-                                                            ),
-                                                            child: IconButton(onPressed: (){}, icon: Icon(Icons.favorite_outline_outlined,color: Colors.white,)))
-                                                        ],),
+
+
+
+                          // Institute & Trainer Card
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                              ),
+                            ),
+
+                            child: Column(
+                                    children: [
+                                      ListTile(
+                                        leading: const CircleAvatar(
+                                          backgroundColor: Color(0xFF1A56DB),
+                                          child: Icon(
+                                            Icons.school,
+                                            color: Colors.white,
                                           ),
+                                        ),
+
+                                        title: Text(
+                                          course['institute'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: const Text('Training Provider'),
+                                      ),
+
+
+
+                                      const Divider(height: 1, indent: 16, endIndent: 16),
+                                      ListTile(
+                                        leading: const CircleAvatar(
+                                          backgroundColor: Color(0xFFF59E0B),
+                                          child: Icon(
+                                            Icons.person,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+
+                                        title: Text(
+                                          course['trainer'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(course['experience']),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                          
+                          const SizedBox(height: 18),
+
+
+
+                          // Course Description
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 22),
+                            
+                            child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                      
+                                      children: [
+                                        const Text(
+                                          'About This Course',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF1A56DB),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 8),
+                                        
+                                        Text(
+                                          course['description'],
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xFF475569),
+                                            height: 1.5,
+                                          ),
+                                        ),
+                                        
+                                        const SizedBox(height: 18),
+                                        
+                                        const Text(
+                                          'What Will You Learn?',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFFF59E0B),
+                                          ),
+                                        ),
+                                        
+                                        const SizedBox(height: 10),
+                                        
+                                        for (var item in learnItems)
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 8),
+                                              child: Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.check_circle_outline,
+                                                    color: Color(0xFFF59E0B),
+                                                    size: 22,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      item,
+                                                      style: const TextStyle(fontSize: 16),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                        const SizedBox(height: 20),
+                                      ],
+                            ),
+                          ),
                         ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+
+
+            // Bottom Buttons
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Color(0xFFE2E8F0)),
+                ),
+              ),
+
+              child: Row(
+                    children: [
+                      
+                      Expanded(
+                        child: SizedBox(
+                          height: 52,
+                          child: ElevatedButton(
+                            onPressed: isEnrolled ? null
+                                    : () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EnrollmentFormScreen(
+                                              courseName: course['name'],
+                                              institute: course['institute'],
+                                              price: course['price'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF1A56DB),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+
+                            child: Text(
+                              isEnrolled ? 'Already Enrolled' : 'Register',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+
+
+                      const SizedBox(width: 12),
+                      
+                      
+                      
+                      Container(
+                        height: 52,
+                        width: 52,
+                        decoration: BoxDecoration(
+                          color: isFavorite ? Colors.red : const Color(0xFFFEE2E2),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isFavorite = !isFavorite;
+                            });
+                          },
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.white : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

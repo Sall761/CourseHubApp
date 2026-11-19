@@ -1,7 +1,7 @@
+import 'package:course_hub_app/Screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'Screens/profileScreen.dart';
-import 'Screens/courseDetailsScreen.dart';
-import 'Screens/paymentScreen.dart';
+import 'Screens/login_screen.dart';
+
 
 void main() {
   runApp(const CouseHubApp());
@@ -14,7 +14,7 @@ class CouseHubApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, 
-      home:(ProfileScreen())
+      home: LoginScreen()
     );
 
   }

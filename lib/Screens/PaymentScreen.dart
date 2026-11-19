@@ -1,423 +1,689 @@
 import 'package:flutter/material.dart';
-import 'ProfileScreen.dart';
+
+import 'profileScreen.dart';
 
 class Payscreen extends StatefulWidget {
-  const Payscreen({super.key});
+  final String courseName;
+  final int price;
+  final String institute;
+
+  const Payscreen({
+    super.key,
+    this.courseName = 'Flutter App Development',
+    this.institute = 'Modern Tech Institute',
+    this.price = 25000,
+  });
 
   @override
   State<Payscreen> createState() => _PayscreenState();
 }
 
 class _PayscreenState extends State<Payscreen> {
+  int selectedIndex = 1; // 0 = Cash, 1 = Card, 2 = Deposit
+  bool isReceiptUploaded = false;
 
-  int selectedIndex = 1; // 0 = Cash, 1 = MasterCard, 2 = Bank Deposit
+  final holderNameController = TextEditingController();
+  final cardNumberController = TextEditingController();
+  final expiryDateController = TextEditingController();
+  final cvvController = TextEditingController();
+
+  @override
+  void dispose() {
+    holderNameController.dispose();
+    cardNumberController.dispose();
+    expiryDateController.dispose();
+    cvvController.dispose();
+    super.dispose();
+  }
+
+  void confirmPayment() {
+    if (selectedIndex == 1) {
+      String holderName = holderNameController.text.trim();
+      String cardNumber = cardNumberController.text.trim();
+      String expiryDate = expiryDateController.text.trim();
+      String cvv = cvvController.text.trim();
+
+      if (holderName.isEmpty ||
+          cardNumber.isEmpty ||
+          expiryDate.isEmpty ||
+          cvv.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill in all card details')),
+        );
+        return;
+      } else if (cardNumber.length < 16) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Card number must be 16 digits')),
+        );
+        return;
+      } else if (cvv.length < 3) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Security code must be 3 digits')),
+        );
+        return;
+      }
+    } else if (selectedIndex == 2 && !isReceiptUploaded) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload deposit receipt image')),
+      );
+      return;
+    }
+
+    final alreadyEnrolled = ProfileScreen.enrolledCourses.any(
+      (c) => c['name'] == widget.courseName,
+    );
+
+    if (!alreadyEnrolled) {
+      ProfileScreen.enrolledCourses.add({
+        'name': widget.courseName,
+        'institute': widget.institute,
+        'isCompleted': false,
+      });
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Enrollment Confirmed Successfully!')),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ProfileScreen(),
+      ),
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      // Appbar
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pop(context);
-        }, icon: Icon(Icons.arrow_back)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         foregroundColor: Colors.white,
-        backgroundColor: Color(0xFF1A56DB),
-        elevation: 8,
-        shadowColor: Colors.black,
-        title: Text("Confirm Payment",style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w500
-          
-        ),),
+        backgroundColor: const Color(0xFF1A56DB),
+        elevation: 0,
+        title: const Text(
+          'Confirm Payment',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
-
-      // Body
-      body: SingleChildScrollView(child: 
-      Column(
-        children: [
-        // Card
-        Container(
-          padding: EdgeInsets.all(10),
-          alignment: Alignment.centerRight,
-          height: 150,
-          width: double.infinity,
-          decoration: BoxDecoration(
-          ),
-          
-          child: Card(
-            color: const Color.fromARGB(255, 250, 250, 250),
-            elevation: 8,
-            shadowColor: Colors.black,
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  
-
-                  child: ListTile(
-                    title: Text("Flutter Course Free ",
-                                style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),),
-                    subtitle: Text("150 SAR",
-                              style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.amber,
-                                      shadows: [Shadow(
-                                                color: Colors.black,
-                                                offset: Offset(0, 1),
-                                                blurRadius: 5)]
-                              ),),
-                  ),
-                ),
-              
-        ),),
-
-
-
-        // Row Payment methods
-        Container(
-          margin: EdgeInsets.all(10),
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [BoxShadow(color: Colors.black,offset: Offset(0, 2),blurRadius: 1)]
-          ),
-          child: Row(
-                    mainAxisAlignment: .spaceEvenly,
-                    children: [
-                      // Cash Button
-                      Expanded(
-                        child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: selectedIndex == 0 ? const Color.fromARGB(255, 255, 154, 21):Colors.transparent,
-                                ),
-
-                                onPressed: (){
-                                  setState(() {
-                                    selectedIndex = 0;
-                                  });
-                      }, child: Text("Cash",style: TextStyle(color: selectedIndex == 0? Colors.white:Colors.black),))),
-                    
-                      // Master Card Button
-                      Expanded(
-                        child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: selectedIndex == 1 ? const Color.fromARGB(255, 255, 154, 21):Colors.transparent,
-                                ),
-
-                                onPressed: (){
-                                  setState(() {
-                                    selectedIndex = 1;
-                                  });
-                      }, child: Text("Card",style: TextStyle(color: selectedIndex == 1? Colors.white:Colors.black),))),
-                    
-                    
-                      // Deposit Button
-                      Expanded(
-                        child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: selectedIndex == 2 ? const Color.fromARGB(255, 255, 154, 21):Colors.transparent,
-                                ),
-
-                                onPressed: (){
-                                  setState(() {
-                                    selectedIndex = 2;
-                                  });
-                      }, child: Text("Diposit",style: TextStyle(color: selectedIndex == 2? Colors.white:Colors.black),))),
-                    
-                      
-                      // Card Button
-                    
-                    ],
-        ),),
-
-
-
-
-
-
-
-// Card Options ==0
-        // Card username
-        if(selectedIndex==1)
-        Container(
-          // color:Colors.amber,
-          height: 350,
-          margin: EdgeInsets.only(left: 10,right: 10),
-          
-          child: 
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Card User Name",
-                                style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),),
-                          Material(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
-                            elevation: 8,
-
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: "Card holder name",
-                                hintStyle: TextStyle(color: Colors.blue,),
-                            
-                                // Backgraound
-                                filled: true,
-                                fillColor: Colors.white,
-                                
-                                // the border before click
-                                enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,),
-                                            ),
-                            
-                                // the border After click (Writing)
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,),
-                                )
-                                
-                                
-                            
-                              ),
-                            ),
-                          )
-                        ],),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Card User Name",
-                                style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),),
-                          Material(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
-                            elevation: 8,
-
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: "Card holder name",
-                                hintStyle: TextStyle(color: Colors.blue,),
-                            
-                                // Backgraound
-                                filled: true,
-                                fillColor: Colors.white,
-                                
-                                // the border before click
-                                enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,),
-                                            ),
-                            
-                                // the border After click (Writing)
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,),
-                                )
-                                
-                                
-                            
-                              ),
-                            ),
-                          )
-                        ],),
-                      
-                      // Expired date and Safe Code
-
-                        Row(
-                          children: [
-                          
-                        Expanded(
-                          child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Expired Date",
-                                  style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),),
-                            Material(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              elevation: 8,
-                          
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "12/5/2026",
-                                  hintStyle: TextStyle(color: Colors.blue,),
-                              
-                                  // Backgraound
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  
-                                  // the border before click
-                                  enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: BorderSide(
-                                              color: Colors.black,
-                                              width: 2,),
-                                              ),
-                              
-                                  // the border After click (Writing)
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    borderSide: BorderSide(
-                                              color: Colors.black,
-                                              width: 2,),
-                                  )
-                                  
-                                  
-                              
-                                ),
-                              ),
-                            )
-                          ],),
-                        ),
-
-                        // 
-                        SizedBox(width: 10,),
-
-                        Expanded(
-                          child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Safity code",
-                                  style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),),
-                            Material(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              elevation: 8,
-                          
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "CVV",
-                                  hintStyle: TextStyle(color: Colors.blue,),
-                              
-                                  // Backgraound
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  
-                                  // the border before click
-                                  enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: BorderSide(
-                                              color: Colors.black,
-                                              width: 2,),
-                                              ),
-                              
-                                  // the border After click (Writing)
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    borderSide: BorderSide(
-                                              color: Colors.black,
-                                              width: 2,),
-                                  )
-                                  
-                                  
-                              
-                                ),
-                              ),
-                            )
-                          ],),
-                        ),
-                        ],),
-
-          ],),
-        ),
-
-
-
-
-
-
-// Cash Options ==0
-        if(selectedIndex==0)
-        Container(
-
-          
-          height: 200,
-          width: double.infinity,
-          margin: EdgeInsets.only(bottom: 200),
-          padding: EdgeInsets.all(20),
-          child: 
-          Card(
-            elevation: 8,
-            shadowColor: Colors.black,
-            
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                    
-                    Icon(Icons.handshake,size: 80,color: Colors.blue,),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Color(0xFF1A56DB),
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10))
-                      ),
-
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                        Icon(Icons.location_on_sharp,color: Colors.red,size: 30,),
-                        Text(" Please come to confirm the requistion",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 15,color: Colors.white),)
-                      ],),
-                    )
-            
-                        
-            
-            ],),
-          ),
-        ),
-
-
-// deposit Options ==2
-        // Cash username
-        if(selectedIndex==2)
-        Container(
-
-        ),
 
 
 
       
-                      // elevated button
-                      Container(
-                        height: 50,
-                        width: double.infinity,
-                        margin: EdgeInsets.only(left: 10,right: 10,),
-                        decoration: BoxDecoration(
-                        // color: Colors.amber,
-                          borderRadius: BorderRadius.circular(5)
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Course detail Card
+            Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.courseName,
+                            style: const TextStyle(
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.price == 0 ? 'Free' : '${widget.price} YER',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFFF59E0B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
+            const SizedBox(height: 16),
+
+
+            // Payment Methods Tabs
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+
+
+              child: Row(
+                children: [
+                  // Cash Button
+                  Expanded(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: selectedIndex == 0 ? const Color(0xFF1A56DB): Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          selectedIndex = 0;
+                        });
+                      },
+
+                      child: Text(
+                        'Cash',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: selectedIndex == 0 ? Colors.white : const Color(0xFF334155),
+                        ),
+                      ),
+                    ),
+                  ),
+
+
+                  // Card Button
+                  Expanded(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: selectedIndex == 1 ? const Color(0xFF1A56DB) : Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          selectedIndex = 1;
+                        });
+                      },
+
+                      child: Text(
+                        'Card',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: selectedIndex == 1 ? Colors.white: const Color(0xFF334155),
+                        ),
+                      ),
+                    ),
+                  ),
+
+
+                  // Deposit Button
+                  Expanded(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: selectedIndex == 2 ? const Color(0xFF1A56DB): Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                            setState(() {
+                              selectedIndex = 2;
+                                    });
+                                  },
+
+                      child: Text(
+                        'Deposit',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: selectedIndex == 2
+                              ? Colors.white
+                              : const Color(0xFF334155),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+
+
+            const SizedBox(height: 20),
+
+
+
+            // Option 0: Cash Payment
+            if (selectedIndex == 0)
+              Card(
+                color: Colors.white,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                
+                child: Column(
+                  children: [
+
+                    const Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Column(
+
+                        children: [
+                                Icon(
+                                  Icons.handshake_outlined,
+                                  size: 75,
+                                  color: Color(0xFF1A56DB),
+                                ),
+                                SizedBox(height: 14),
+                                Text(
+                                  'Please visit the institute headquarters to pay the fees and confirm your seat before the course starts.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    height: 1.5,
+                                    color: Color(0xFF334155),
+                                  ),
+                                ),
+                              ],
+                          ),
                         ),
 
+                        
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
 
-                        child: TextButton(
-                          style: TextButton.styleFrom(shadowColor: Colors.black,elevation: 8,backgroundColor: Colors.blue),
-                          onPressed: (){}, child: Text( selectedIndex==0 ?"OK":"Confirm",style: TextStyle(color: Colors.white,fontSize: 20),)))
-        
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF1A56DB),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(18),
+                          bottomRight: Radius.circular(18),
+                        ),
+                      ),
+
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: Color(0xFFF59E0B),
+                            size: 24,
+                          ),
+                          SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              'Pay directly at the institute office',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
 
-      ],),),
 
+            // Option 1: Card Payment
+            if (selectedIndex == 1)
+              Card(
+                color: Colors.white,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                          
+                          const Text(
+                            'Card Holder Name',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+
+
+                          const SizedBox(height: 8),
+                          
+                          
+                          TextField(
+                            controller: holderNameController,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter card holder name',
+                              prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: Color(0xFF1A56DB),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                              ),
+                            ),
+                          ),
+                        
+                        
+                          const SizedBox(height: 16),
+                        
+                        
+                          const Text(
+                            'Card Number',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                        
+                        
+                          const SizedBox(height: 8),
+                        
+                        
+                          TextField(
+                            controller: cardNumberController,
+                            keyboardType: TextInputType.number,
+                            maxLength: 16,
+                            decoration: const InputDecoration(
+                              hintText: '0000 0000 0000 0000',
+                              counterText: '',
+                              prefixIcon: Icon(
+                                Icons.credit_card,
+                                color: Color(0xFF1A56DB),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                              ),
+                            ),
+                          ),
+                        
+                        
+                          const SizedBox(height: 16),
+                        
+                        
+                          Row(
+                            children: [
+
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        const Text(
+                                          'Expiry Date',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF0F172A),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 8),
+                                        
+                                        TextField(
+                                          controller: expiryDateController,
+                                          keyboardType: TextInputType.datetime,
+                                          decoration: const InputDecoration(
+                                            hintText: 'MM/YY',
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(12),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ),
+
+
+                                const SizedBox(width: 12),
+
+
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                          
+                                          const Text(
+                                            'Security Code',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF0F172A),
+                                            ),
+                                          ),
+                                          
+                                          const SizedBox(height: 8),
+                                          
+                                          TextField(
+                                            controller: cvvController,
+                                            obscureText: true,
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 3,
+                                            decoration: const InputDecoration(
+                                              hintText: 'CVV',
+                                              counterText: '',
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(12),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                          ),
+                        ],
+                  ),
+                ),
+              ),
+
+
+
+
+            // Option 2: Bank Deposit
+            if (selectedIndex == 2)
+              Column(
+                children: [
+
+                    Card(
+                      color: const Color(0xFFE8EEFC),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+
+                      child: const Padding(
+                        padding: EdgeInsets.all(18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                                Row(
+                                  children: [
+                                    
+                                    Icon(
+                                      Icons.account_balance,
+                                      color: Color(0xFF1A56DB),
+                                    ),
+
+                                    SizedBox(width: 8),
+                                    
+                                    Text(
+                                      'Al-Kuraimi Islamic Bank',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF1A56DB),
+                                      ),
+                                    ),
+                                  ],
+                            ),
+
+
+                            SizedBox(height: 10),
+                            
+
+                            Text(
+                              'Account Number: 1234567890',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0F172A),
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              'Account Name: CourseHub Training',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF475569),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+
+                    const SizedBox(height: 14),
+                    
+                    
+                    Card(
+                      color: Colors.white,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          setState(() {
+                            isReceiptUploaded = true;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 28,
+                            horizontal: 16,
+                          ),
+
+                          child: Column(
+                            children: [
+
+                              CircleAvatar(
+                                radius: 26,
+                                backgroundColor: isReceiptUploaded? Colors.green: const Color(0xFF1A56DB),
+                                child: Icon(isReceiptUploaded? Icons.check: Icons.upload_file,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                              ),
+
+
+                              const SizedBox(height: 12),
+                              
+                              
+                              Text(
+                                isReceiptUploaded
+                                    ? 'Receipt Image Uploaded'
+                                    : 'Upload Deposit Receipt Image',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF0F172A),
+                                ),
+                              ),
+
+                              const SizedBox(height: 6),
+                              
+                              Text(
+                                isReceiptUploaded
+                                    ? 'receipt_image.jpg selected'
+                                    : 'JPG or PNG (Max size 5MB)',
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Color(0xFF64748B),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+
+            const SizedBox(height: 24),
+
+            // Confirm Button
+            SizedBox(
+              height: 54,
+              child: ElevatedButton(
+                onPressed: confirmPayment,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A56DB),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                
+                child: Text(
+                  selectedIndex == 0
+                      ? 'Confirm Booking'
+                      : selectedIndex == 2
+                          ? 'Confirm Deposit'
+                          : 'Confirm Payment',
+                  style: const TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
